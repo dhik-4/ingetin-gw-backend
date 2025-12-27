@@ -32,27 +32,37 @@ namespace IngetinGwAPI.Controllers
         [AllowAnonymous]
         public async Task< IActionResult> Login([FromBody] LoginRequest input, CancellationToken cancellationToken)
         {
-            var datas = await _repository.ValidateUsers(input.Email, input.Password, cancellationToken);
-            if (datas is null)
+            try
             {
-                return Unauthorized(Helpers.Fail(
-                    "ERR_INVALID_CREDS",
-                    "incorrect username or password"
-                ));
+                var datas = await _repository.ValidateUsers(input.Email, input.Password, cancellationToken);
+                if (datas is null)
+                {
+                    return Unauthorized(Helpers.Fail(
+                        "ERR_INVALID_CREDS",
+                        "incorrect username or password"
+                    ));
+                }
+
+                var accessToken = GenerateAccessToken(datas);
+                //Guid.NewGuid().ToString();
+                var refreshToken = Guid.NewGuid().ToString();
+
+                await _refreshTokenRepository.CreateAsync(datas.Id, refreshToken);
+
+                return Ok(Helpers.Success(new
+                {
+                    user = new { datas.Id, datas.Email, datas.Name },
+                    access_token = accessToken,
+                    refresh_token = refreshToken
+                }));
             }
-
-            var accessToken = GenerateAccessToken(datas);
-            //Guid.NewGuid().ToString();
-            var refreshToken = Guid.NewGuid().ToString();
-
-            await _refreshTokenRepository.CreateAsync(datas.Id, refreshToken);
-
-            return Ok(Helpers.Success(new
+            catch (Exception ex)
             {
-                user = new { datas.Id, datas.Email, datas.Name },
-                access_token = accessToken,
-                refresh_token = refreshToken
-            }));
+            }
+            return BadRequest(Helpers.Fail(
+                        "ERR_INVALID_CREDS",
+                        "Error in generate token"
+                    ));
         }
 
         [HttpPut]
