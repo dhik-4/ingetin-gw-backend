@@ -70,8 +70,8 @@ public partial class AppDbContext : DbContext
                 .HasMaxLength(200)
                 .IsUnicode(false)
                 .HasColumnName("description");
-            entity.Property(e => e.EventAt).HasColumnName("event_at");
-            entity.Property(e => e.RemindAt).HasColumnName("remind_at");
+            entity.Property(e => e.Event_at).HasColumnName("event_at");
+            entity.Property(e => e.Remind_at).HasColumnName("remind_at");
             entity.Property(e => e.Title)
                 .HasMaxLength(50)
                 .IsUnicode(false)

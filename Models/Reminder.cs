@@ -11,7 +11,7 @@ public partial class Reminder
 
     public string Description { get; set; } = null!;
 
-    public long RemindAt { get; set; }
+    public long Remind_at { get; set; }
 
-    public long? EventAt { get; set; }
+    public long? Event_at { get; set; }
 }
