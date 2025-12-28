@@ -15,7 +15,11 @@ public partial class AppDbContext : DbContext
     {
     }
 
+    //public virtual DbSet<AccessToken> AccessTokens { get; set; }
+
     public virtual DbSet<RefreshToken> RefreshTokens { get; set; }
+
+    public virtual DbSet<Reminder> Reminders { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
 
@@ -25,6 +29,21 @@ public partial class AppDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        //modelBuilder.Entity<AccessToken>(entity =>
+        //{
+        //    entity.HasKey(e => e.Id).HasName("PK__AccessTo__3214EC0767ADC25D");
+
+        //    entity.ToTable("AccessToken");
+
+        //    entity.Property(e => e.CreatedAt)
+        //        .HasDefaultValueSql("(getdate())")
+        //        .HasColumnType("datetime");
+        //    entity.Property(e => e.ExpiresAt).HasColumnType("datetime");
+        //    entity.Property(e => e.Token)
+        //        .HasMaxLength(100)
+        //        .IsUnicode(false);
+        //});
+
         modelBuilder.Entity<RefreshToken>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__RefreshT__3214EC07AB77386E");
@@ -38,6 +57,25 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.Token)
                 .HasMaxLength(100)
                 .IsUnicode(false);
+        });
+
+        modelBuilder.Entity<Reminder>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Reminder__3213E83F4F740366");
+
+            entity.ToTable("Reminder");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Description)
+                .HasMaxLength(200)
+                .IsUnicode(false)
+                .HasColumnName("description");
+            entity.Property(e => e.EventAt).HasColumnName("event_at");
+            entity.Property(e => e.RemindAt).HasColumnName("remind_at");
+            entity.Property(e => e.Title)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("title");
         });
 
         modelBuilder.Entity<User>(entity =>
