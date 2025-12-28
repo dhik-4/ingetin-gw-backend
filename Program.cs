@@ -61,6 +61,7 @@ service.AddDbContext<AppDbContext>(opt => opt.UseSqlServer(koneksiDB,
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+builder.Services.AddScoped<IReminderRepository, ReminderRepository>();
 
 // 🔹 JWT Authentication
 var jwtSettings = builder.Configuration.GetSection("Jwt");
