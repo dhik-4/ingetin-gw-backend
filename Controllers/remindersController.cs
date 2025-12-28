@@ -1,7 +1,10 @@
-﻿using IngetinGwAPI.Interfaces;
+﻿using IngetinGwAPI.CustomModels;
+using IngetinGwAPI.Interfaces;
+using IngetinGwAPI.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading;
 
 namespace IngetinGwAPI.Controllers
 {
@@ -9,27 +12,66 @@ namespace IngetinGwAPI.Controllers
     [ApiController]
     public class remindersController : ControllerBase
     {
-        private readonly IUserRepository _repository;
+        private readonly IReminderRepository _repository;
         private readonly IRefreshTokenRepository _refreshTokenRepository;
-        private readonly IConfiguration _config;
 
-        public remindersController(IUserRepository repository, IRefreshTokenRepository refreshTokenRepository, IConfiguration config)
+        public remindersController(IReminderRepository repository, IRefreshTokenRepository refreshTokenRepository)
         {
             _repository = repository;
             _refreshTokenRepository = refreshTokenRepository;
-            _config = config;
         }
 
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> ListReminders(int limit = 10)
+        //[AllowAnonymous]
+        public async Task<IActionResult> ListReminders(CancellationToken cancellationToken, int limit = 10)
         {
-            return Ok("This is protected data");
+            try
+            {
+                // Read Authorization header
+                var authHeader = Request.Headers["Authorization"].ToString();
+
+                if (string.IsNullOrWhiteSpace(authHeader) ||
+                    !authHeader.StartsWith("Bearer "))
+                {
+                    return Unauthorized(Helpers.Fail(
+                        "ERR_INVALID_REFRESH_TOKEN", "authorization header missing"
+                    ));
+                }
+
+
+                var reminders = await _repository.ListReminders(limit, cancellationToken);
+                if(reminders is null || reminders.Count <= 0)
+                {
+                    return BadRequest(Helpers.Fail(
+                        "REMINDER_EMPTY", "There is no reminder data"
+                    ));
+                }
+
+                return Ok(Helpers.Success(new {
+                        reminders,
+                        limit
+                    }
+                ));
+            }
+            catch (Exception ex)
+            {
+            }
+
+            return BadRequest(new ApiResponse<object>
+            {
+                Ok = false,
+                Err = "ERR_GET_REMINDER",
+                Msg = "Error in get reminder"
+            });
+
+            //return Ok("This is protected data");
         }
 
         [HttpPost]
-        [Authorize]
-        public async Task<IActionResult> CreateReminder()
+        //[Authorize]
+        [AllowAnonymous]
+        public async Task<IActionResult> CreateReminder([FromBody] Reminder_input input)
         {
             return Ok("This is protected data");
         }
