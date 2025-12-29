@@ -43,11 +43,12 @@ namespace IngetinGwAPI.Controllers
                     ));
                 }
 
-                var accessToken = GenerateAccessToken(datas);
-                //Guid.NewGuid().ToString();
+                var accessToken = //GenerateAccessToken(datas);
+                Guid.NewGuid().ToString();
                 var refreshToken = Guid.NewGuid().ToString();
 
-                await _refreshTokenRepository.CreateAsync(datas.Id, refreshToken);
+                await _refreshTokenRepository.CreateAccessAsync(datas.Id, accessToken);
+                await _refreshTokenRepository.CreateRefreshAsync(datas.Id, refreshToken);
 
                 return Ok(Helpers.Success(new
                 {
@@ -85,7 +86,7 @@ namespace IngetinGwAPI.Controllers
                 // Extract refresh token
                 var refreshToken = authHeader["Bearer ".Length..].Trim();
 
-                var tokenEntity = await _refreshTokenRepository.GetValidAsync(refreshToken);
+                var tokenEntity = await _refreshTokenRepository.GetValidRefreshAsync(refreshToken);
 
                 if (tokenEntity == null)
                 {
@@ -98,11 +99,13 @@ namespace IngetinGwAPI.Controllers
                 }
 
                 // Optional but recommended: rotate refresh token
-                await _refreshTokenRepository.RevokeAsync(tokenEntity);
+                await _refreshTokenRepository.RevokeRefreshAsync(tokenEntity);
 
-                //var newAccessToken = Guid.NewGuid().ToString();
+                var newAccessToken = Guid.NewGuid().ToString();
                 var user = await _repository.GetUserById(tokenEntity.UsersId);
-                var newAccessToken = GenerateAccessToken(user);
+                //var newAccessToken = GenerateAccessToken(user);
+
+                await _refreshTokenRepository.CreateAccessAsync(user.Id, newAccessToken);
 
 
                 return Ok(new ApiResponse<object>
@@ -124,6 +127,16 @@ namespace IngetinGwAPI.Controllers
                 Err = "ERR_INVALID_REFRESH_TOKEN",
                 Msg = "invalid refresh token"
             });
+        }
+
+        private  string GenerateAccessToken_Unused(User user)
+        {
+            string newAccessToken = Guid.NewGuid().ToString();
+
+            //var _insert = await _refreshTokenRepository.CreateAccessAsync(user.Id, newAccessToken);
+
+
+            return newAccessToken;
         }
 
         private string GenerateAccessToken(User user)

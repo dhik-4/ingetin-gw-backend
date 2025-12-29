@@ -4,8 +4,13 @@ namespace IngetinGwAPI.Interfaces
 {
     public interface IRefreshTokenRepository
     {
-        Task<RefreshToken> GetValidAsync(string token);
-        Task RevokeAsync(RefreshToken token);
-        Task<bool> CreateAsync(int UserId, string refreshToken);
+        Task<RefreshToken> GetValidRefreshAsync(string token);
+        Task RevokeRefreshAsync(RefreshToken token);
+        Task<bool> CreateRefreshAsync(int UserId, string refreshToken);
+
+        Task<bool> CreateAccessAsync(int UserId, string accessToken);
+        Task<AccessToken> GetValidAccessAsync(string token);
+        Task RevokeAccessAsync(AccessToken token);
+        Task<bool> ValidateAccessToken(string authHeader);
     }
 }

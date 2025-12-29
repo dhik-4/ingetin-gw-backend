@@ -1,6 +1,8 @@
-﻿using IngetinGwAPI.CustomModels;
+﻿using Azure.Core;
+using IngetinGwAPI.CustomModels;
 using IngetinGwAPI.Interfaces;
 using IngetinGwAPI.Models;
+using IngetinGwAPI.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -15,14 +17,16 @@ namespace IngetinGwAPI.Controllers
     public class remindersController : ControllerBase
     {
         private readonly IReminderRepository _repository;
+        private readonly IRefreshTokenRepository _refreshTokenRepository;
 
-        public remindersController(IReminderRepository repository)
+        public remindersController(IReminderRepository repository, IRefreshTokenRepository refreshTokenRepository)
         {
             _repository = repository;
+            _refreshTokenRepository = refreshTokenRepository;
         }
 
         [HttpGet]
-        [Authorize]
+        //[Authorize]
         //[AllowAnonymous]
         public async Task<IActionResult> ListReminders(CancellationToken cancellationToken, int limit = 10)
         {
@@ -31,11 +35,19 @@ namespace IngetinGwAPI.Controllers
                 // Read Authorization header
                 var authHeader = Request.Headers["Authorization"].ToString();
 
-                if (string.IsNullOrWhiteSpace(authHeader) ||
-                    !authHeader.StartsWith("Bearer "))
+                //if (string.IsNullOrWhiteSpace(authHeader) ||
+                //    !authHeader.StartsWith("Bearer "))
+                //{
+                //    return Unauthorized(Helpers.Fail(
+                //        "ERR_INVALID_ACCESS_TOKEN", "authorization header missing"
+                //    ));
+                //}
+
+                var tokenEntity = await _refreshTokenRepository.ValidateAccessToken(authHeader);
+                if (!tokenEntity)
                 {
                     return Unauthorized(Helpers.Fail(
-                        "ERR_INVALID_REFRESH_TOKEN", "authorization header missing"
+                        "ERR_EXPIRED_ACCESS_TOKEN", "Access token invalid or expired"
                     ));
                 }
 
@@ -67,19 +79,18 @@ namespace IngetinGwAPI.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        //[Authorize]
         public async Task<IActionResult> CreateReminder([FromBody] Reminder_input input, CancellationToken cancellationToken)
         {
             try
             {
                 // Read Authorization header
                 var authHeader = Request.Headers["Authorization"].ToString();
-
-                if (string.IsNullOrWhiteSpace(authHeader) ||
-                    !authHeader.StartsWith("Bearer "))
+                var tokenEntity = await _refreshTokenRepository.ValidateAccessToken(authHeader);
+                if (!tokenEntity)
                 {
                     return Unauthorized(Helpers.Fail(
-                        "ERR_INVALID_REFRESH_TOKEN", "authorization header missing"
+                        "ERR_ACCESS_TOKEN", "Access token invalid or expired"
                     ));
                 }
 
@@ -107,19 +118,18 @@ namespace IngetinGwAPI.Controllers
         }
 
         [HttpGet("{id}")]
-        [Authorize]
+        //[Authorize]
         public async Task<IActionResult> ViewReminders(int id, CancellationToken cancellationToken)
         {
             try
             {
                 // Read Authorization header
                 var authHeader = Request.Headers["Authorization"].ToString();
-
-                if (string.IsNullOrWhiteSpace(authHeader) ||
-                    !authHeader.StartsWith("Bearer "))
+                var tokenEntity = await _refreshTokenRepository.ValidateAccessToken(authHeader);
+                if (!tokenEntity)
                 {
                     return Unauthorized(Helpers.Fail(
-                        "ERR_INVALID_REFRESH_TOKEN", "authorization header missing"
+                        "ERR_ACCESS_TOKEN", "Access token invalid or expired"
                     ));
                 }
 
@@ -148,19 +158,18 @@ namespace IngetinGwAPI.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize]
+        //[Authorize]
         public async Task<IActionResult> EditReminder(int id, [FromBody] Reminder_input input, CancellationToken cancellationToken)
         {
             try
             {
                 // Read Authorization header
                 var authHeader = Request.Headers["Authorization"].ToString();
-
-                if (string.IsNullOrWhiteSpace(authHeader) ||
-                    !authHeader.StartsWith("Bearer "))
+                var tokenEntity = await _refreshTokenRepository.ValidateAccessToken(authHeader);
+                if (!tokenEntity)
                 {
                     return Unauthorized(Helpers.Fail(
-                        "ERR_INVALID_REFRESH_TOKEN", "authorization header missing"
+                        "ERR_ACCESS_TOKEN", "Access token invalid or expired"
                     ));
                 }
 
@@ -188,19 +197,18 @@ namespace IngetinGwAPI.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize]
+        //[Authorize]
         public async Task<IActionResult> DeleteReminder(int id, CancellationToken cancellationToken)
         {
             try
             {
                 // Read Authorization header
                 var authHeader = Request.Headers["Authorization"].ToString();
-
-                if (string.IsNullOrWhiteSpace(authHeader) ||
-                    !authHeader.StartsWith("Bearer "))
+                var tokenEntity = await _refreshTokenRepository.ValidateAccessToken(authHeader);
+                if (!tokenEntity)
                 {
                     return Unauthorized(Helpers.Fail(
-                        "ERR_INVALID_REFRESH_TOKEN", "authorization header missing"
+                        "ERR_ACCESS_TOKEN", "Access token invalid or expired"
                     ));
                 }
 

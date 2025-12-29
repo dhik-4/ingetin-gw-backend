@@ -15,7 +15,7 @@ public partial class AppDbContext : DbContext
     {
     }
 
-    //public virtual DbSet<AccessToken> AccessTokens { get; set; }
+    public virtual DbSet<AccessToken> AccessTokens { get; set; }
 
     public virtual DbSet<RefreshToken> RefreshTokens { get; set; }
 
@@ -29,20 +29,20 @@ public partial class AppDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        //modelBuilder.Entity<AccessToken>(entity =>
-        //{
-        //    entity.HasKey(e => e.Id).HasName("PK__AccessTo__3214EC0767ADC25D");
+        modelBuilder.Entity<AccessToken>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__AccessTo__3214EC0767ADC25D");
 
-        //    entity.ToTable("AccessToken");
+            entity.ToTable("AccessToken");
 
-        //    entity.Property(e => e.CreatedAt)
-        //        .HasDefaultValueSql("(getdate())")
-        //        .HasColumnType("datetime");
-        //    entity.Property(e => e.ExpiresAt).HasColumnType("datetime");
-        //    entity.Property(e => e.Token)
-        //        .HasMaxLength(100)
-        //        .IsUnicode(false);
-        //});
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.ExpiresAt).HasColumnType("datetime");
+            entity.Property(e => e.Token)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+        });
 
         modelBuilder.Entity<RefreshToken>(entity =>
         {
