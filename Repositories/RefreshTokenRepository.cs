@@ -61,8 +61,10 @@ namespace IngetinGwAPI.Repositories
             bool result = false;
             try
             {
-                var jwt = _config.GetSection("Jwt");
-                double AccessTokenSeconds = double.Parse( jwt["AccessTokenSeconds"]);
+                //var jwt = _config.GetSection("Jwt");
+                //double AccessTokenSeconds = double.Parse( jwt["AccessTokenSeconds"]);
+                var cVariable = _config.GetSection("CustomVariable");
+                double AccessTokenSeconds = double.Parse(cVariable["AccessTokenSeconds"]);
 
                 AccessToken token = new AccessToken
                 {
