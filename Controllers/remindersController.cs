@@ -44,7 +44,7 @@ namespace IngetinGwAPI.Controllers
                 //}
 
                 var tokenEntity = await _refreshTokenRepository.ValidateAccessToken(authHeader);
-                if (!tokenEntity)
+                if (tokenEntity <= 0)
                 {
                     return Unauthorized(Helpers.Fail(
                         "ERR_EXPIRED_ACCESS_TOKEN", "Access token invalid or expired"
@@ -87,7 +87,7 @@ namespace IngetinGwAPI.Controllers
                 // Read Authorization header
                 var authHeader = Request.Headers["Authorization"].ToString();
                 var tokenEntity = await _refreshTokenRepository.ValidateAccessToken(authHeader);
-                if (!tokenEntity)
+                if (tokenEntity <= 0)
                 {
                     return Unauthorized(Helpers.Fail(
                         "ERR_ACCESS_TOKEN", "Access token invalid or expired"
@@ -95,7 +95,7 @@ namespace IngetinGwAPI.Controllers
                 }
 
 
-                var reminders = await _repository.CreateReminder(input, cancellationToken);
+                var reminders = await _repository.CreateReminder(input, tokenEntity, cancellationToken);
                 if (reminders is null)
                 {
                     return BadRequest(Helpers.Fail(
@@ -126,7 +126,7 @@ namespace IngetinGwAPI.Controllers
                 // Read Authorization header
                 var authHeader = Request.Headers["Authorization"].ToString();
                 var tokenEntity = await _refreshTokenRepository.ValidateAccessToken(authHeader);
-                if (!tokenEntity)
+                if (tokenEntity <= 0)
                 {
                     return Unauthorized(Helpers.Fail(
                         "ERR_ACCESS_TOKEN", "Access token invalid or expired"
@@ -166,7 +166,7 @@ namespace IngetinGwAPI.Controllers
                 // Read Authorization header
                 var authHeader = Request.Headers["Authorization"].ToString();
                 var tokenEntity = await _refreshTokenRepository.ValidateAccessToken(authHeader);
-                if (!tokenEntity)
+                if (tokenEntity <= 0)
                 {
                     return Unauthorized(Helpers.Fail(
                         "ERR_ACCESS_TOKEN", "Access token invalid or expired"
@@ -205,7 +205,7 @@ namespace IngetinGwAPI.Controllers
                 // Read Authorization header
                 var authHeader = Request.Headers["Authorization"].ToString();
                 var tokenEntity = await _refreshTokenRepository.ValidateAccessToken(authHeader);
-                if (!tokenEntity)
+                if (tokenEntity <= 0)
                 {
                     return Unauthorized(Helpers.Fail(
                         "ERR_ACCESS_TOKEN", "Access token invalid or expired"

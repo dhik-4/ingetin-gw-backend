@@ -2,7 +2,6 @@
 using IngetinGwAPI.Interfaces;
 using IngetinGwAPI.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 
 namespace IngetinGwAPI.Repositories
 {
@@ -31,7 +30,7 @@ namespace IngetinGwAPI.Repositories
             return _result;
         }
 
-        public async Task<Reminder> CreateReminder(Reminder_input input, CancellationToken cancellationToken)
+        public async Task<Reminder> CreateReminder(Reminder_input input, int UserId, CancellationToken cancellationToken)
         {
             try
             {
@@ -39,6 +38,7 @@ namespace IngetinGwAPI.Repositories
                 {
                     Title = input.Title,
                     Description = input.Description,
+                    UserId = UserId,
                     Event_at = input.Event_at,
                     Remind_at = input.Remind_at
                 };

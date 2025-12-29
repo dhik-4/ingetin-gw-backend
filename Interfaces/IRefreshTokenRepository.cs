@@ -11,6 +11,6 @@ namespace IngetinGwAPI.Interfaces
         Task<bool> CreateAccessAsync(int UserId, string accessToken);
         Task<AccessToken> GetValidAccessAsync(string token);
         Task RevokeAccessAsync(AccessToken token);
-        Task<bool> ValidateAccessToken(string authHeader);
+        Task<int> ValidateAccessToken(string authHeader);
     }
 }

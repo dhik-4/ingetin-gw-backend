@@ -101,9 +101,9 @@ namespace IngetinGwAPI.Repositories
             await _db.SaveChangesAsync();
         }
 
-        public async Task<bool> ValidateAccessToken(string authHeader)
+        public async Task<int> ValidateAccessToken(string authHeader)
         {
-            bool Result = false;
+            int Result = 0;
             try
             {
                 if (!string.IsNullOrWhiteSpace(authHeader) && authHeader.StartsWith("Bearer "))
@@ -111,7 +111,7 @@ namespace IngetinGwAPI.Repositories
                     var accessToken = authHeader["Bearer ".Length..].Trim();
                     var tokenEntity = await GetValidAccessAsync(accessToken);
                     
-                    Result = tokenEntity is not null;
+                    Result = tokenEntity is not null ? tokenEntity.UsersId : 0;
                 }
             }
             catch { }
