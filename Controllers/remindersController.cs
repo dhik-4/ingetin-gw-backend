@@ -56,7 +56,7 @@ namespace IngetinGwAPI.Controllers
                     ));
                 }
 
-
+                //get list reminders
                 var reminders = await _repository.ListReminders(limit, cancellationToken);
                 if(reminders is null || reminders.Count <= 0)
                 {
@@ -99,7 +99,7 @@ namespace IngetinGwAPI.Controllers
                     ));
                 }
 
-
+                //create new reminder
                 var reminders = await _repository.CreateReminder(input, tokenEntity, cancellationToken);
                 if (reminders is null)
                 {
@@ -108,10 +108,13 @@ namespace IngetinGwAPI.Controllers
                     ));
                 }
 
+                DateTime tempDelayUnix = DateTimeOffset.FromUnixTimeSeconds(reminders.Remind_at).LocalDateTime;
+                //DateTime tempNow = DateTime.Now.AddSeconds(30);
+                
+                //start to send email
                 var jobId = _backgroundJobClient.Schedule<ReminderJobService>(
                     x => x.SendReminderEmail(reminders.Id, cancellationToken),
-                    //reminders.Remind_at
-                    DateTime.Now.AddSeconds(20)
+                    tempDelayUnix
                 );
 
                 //reminders.HangfireJobId = jobId;
@@ -146,7 +149,7 @@ namespace IngetinGwAPI.Controllers
                     ));
                 }
 
-
+                //get view 1 reminder data
                 var reminders = await _repository.ViewReminder(id, cancellationToken);
                 if (reminders is null )
                 {
@@ -186,7 +189,7 @@ namespace IngetinGwAPI.Controllers
                     ));
                 }
 
-
+                //go update the existing reminder
                 var reminders = await _repository.EditReminder(id, input, cancellationToken);
                 if (reminders is null)
                 {
@@ -225,7 +228,7 @@ namespace IngetinGwAPI.Controllers
                     ));
                 }
 
-
+                //go delete the reminder
                 var reminders = await _repository.DeleteReminder(id, cancellationToken);
                 if (!reminders)
                 {
@@ -248,20 +251,34 @@ namespace IngetinGwAPI.Controllers
             });
         }
 
-        [HttpGet("timetounix")]
+        [HttpPost("timetounix")]
         [AllowAnonymous]
-        public async Task<IActionResult> DateTimeToUnix(DateTime input1, DateTime input2)
+        public async Task<IActionResult> DateTimeToUnix([FromBody] DateTime[] input1)
         {
-            long unix1 = new DateTimeOffset(input1).ToUnixTimeSeconds();
-            long unix2 = new DateTimeOffset(input2).ToUnixTimeSeconds();
-
-            return Ok(new
+            int panjang = input1.Length;
+            //long unix1 = new DateTimeOffset(input1[0]).ToUnixTimeSeconds();
+            long[] unixTime = new long[panjang];
+            for (int i = 0; i < panjang; i++)
             {
-                input1,
-                unix1,
-                input2,
-                unix2
-            });
+                unixTime[i] = new DateTimeOffset(input1[i]).ToUnixTimeSeconds();
+            }
+            return Ok(unixTime);
+        }
+
+        [HttpPost("unixtotime")]
+        [AllowAnonymous]
+        public async Task<IActionResult> UnixToDateTime([FromBody] long[] input)
+        {
+            DateTime[] dateTimesUTC = new DateTime[input.Length];
+            DateTime[] dateTimesLocal = new DateTime[input.Length];
+            
+            for (int i = 0; i < input.Length; i++)
+            {
+                dateTimesUTC[i] = DateTimeOffset.FromUnixTimeSeconds(input[i]).UtcDateTime;
+                dateTimesLocal[i] = DateTimeOffset.FromUnixTimeSeconds(input[i]).LocalDateTime;
+            }
+
+            return Ok(new { dateTimesLocal, dateTimesUTC });
         }
     }
 }
