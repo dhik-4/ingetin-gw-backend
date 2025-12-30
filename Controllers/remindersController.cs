@@ -99,6 +99,22 @@ namespace IngetinGwAPI.Controllers
                     ));
                 }
 
+                //check validity remind date and event date
+                DateTime dtRemindAt = DateTimeOffset.FromUnixTimeSeconds(input.Remind_at).LocalDateTime;
+                DateTime dtEventAt = DateTimeOffset.FromUnixTimeSeconds(input.Event_at).LocalDateTime;
+                if (dtRemindAt <= DateTime.Now)
+                {
+                    return BadRequest(Helpers.Fail(
+                        "REMIND_DATE_FAIL", "Remind_at cannot before date time now"
+                    ));
+                }
+                if (dtEventAt <= DateTime.Now)
+                {
+                    return BadRequest(Helpers.Fail(
+                        "REMIND_DATE_FAIL", "Event_at cannot before date time now"
+                    ));
+                }
+
                 //create new reminder
                 var reminders = await _repository.CreateReminder(input, tokenEntity, cancellationToken);
                 if (reminders is null)
@@ -108,13 +124,12 @@ namespace IngetinGwAPI.Controllers
                     ));
                 }
 
-                DateTime tempDelayUnix = DateTimeOffset.FromUnixTimeSeconds(reminders.Remind_at).LocalDateTime;
                 //DateTime tempNow = DateTime.Now.AddSeconds(30);
-                
+
                 //start to send email
                 var jobId = _backgroundJobClient.Schedule<ReminderJobService>(
                     x => x.SendReminderEmail(reminders.Id, cancellationToken),
-                    tempDelayUnix
+                    dtRemindAt
                 );
 
                 //reminders.HangfireJobId = jobId;
