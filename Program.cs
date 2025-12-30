@@ -1,6 +1,8 @@
-﻿using IngetinGwAPI.Interfaces;
+﻿using Hangfire;
+using IngetinGwAPI.Interfaces;
 using IngetinGwAPI.Models;
 using IngetinGwAPI.Repositories;
+using IngetinGwAPI.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -59,9 +61,18 @@ service.AddDbContext<AppDbContext>(opt => opt.UseSqlServer(koneksiDB,
         errorNumbersToAdd: null)
     ));
 
+builder.Services.AddHangfire(config =>
+    config.UseSqlServerStorage(koneksiDB)
+);
+builder.Services.AddHangfireServer();
+
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 builder.Services.AddScoped<IReminderRepository, ReminderRepository>();
+builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<ReminderJobService>();
+
+
 
 // 🔹 JWT Authentication
 var jwtSettings = builder.Configuration.GetSection("Jwt");
@@ -88,6 +99,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
+
+//app.UseHangfireDashboard("/hangfire");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
