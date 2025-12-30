@@ -19,7 +19,7 @@ namespace IngetinGwAPI.Services
         {
             var reminder = await _repository.ViewReminder(reminderId, cancellationToken);
 
-            if (reminder is null || reminder.IsEmailSent == 1)
+            if (reminder is null || reminder.UserId is null || reminder.IsEmailSent == 1)
                 return;
 
             var _user = await _userRepository.GetUserById( reminder.UserId ?? 0);
