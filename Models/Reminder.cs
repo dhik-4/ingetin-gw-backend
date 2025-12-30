@@ -16,9 +16,11 @@ public partial class Reminder
 
     public long? Event_at { get; set; }
 
-    [JsonIgnore]
-    public int? UserId { get; set; }
 
     [JsonIgnore]
+    public int? UserId { get; set; }
+    [JsonIgnore]
     public byte? IsEmailSent { get; set; }
+    //[JsonIgnore]
+    //public string? HangfireJobId { get; set; }
 }

@@ -129,5 +129,27 @@ namespace IngetinGwAPI.Repositories
 
             return Result >= 1;
         }
+
+
+        public async Task<bool> UpdateEmailSentReminder(Reminder data, CancellationToken cancellationToken)
+        {
+            bool Result = false;
+            try
+            {
+                int rowAffected = await _context.Reminders.Where(t => t.Id == data.Id)
+                    .ExecuteUpdateAsync(s =>
+                        s.SetProperty(v => v.IsEmailSent, data.IsEmailSent), cancellationToken
+                    );
+
+                _context.ChangeTracker.Clear();
+
+                Result = rowAffected > 0;
+            }
+            catch (Exception ex)
+            {
+            }
+
+            return Result;
+        }
     }
 }

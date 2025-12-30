@@ -10,5 +10,7 @@ namespace IngetinGwAPI.Interfaces
         Task<Reminder> ViewReminder(int id, CancellationToken cancellationToken);
         Task<Reminder> EditReminder(int id, Reminder_input data, CancellationToken cancellationToken);
         Task<bool> DeleteReminder(int id, CancellationToken cancellationToken);
+
+        Task<bool> UpdateEmailSentReminder(Reminder data, CancellationToken cancellationToken);
     }
 }
