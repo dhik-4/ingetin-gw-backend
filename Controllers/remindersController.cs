@@ -1,8 +1,10 @@
 ﻿using Azure.Core;
+using Hangfire;
 using IngetinGwAPI.CustomModels;
 using IngetinGwAPI.Interfaces;
 using IngetinGwAPI.Models;
 using IngetinGwAPI.Repositories;
+using IngetinGwAPI.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -18,11 +20,14 @@ namespace IngetinGwAPI.Controllers
     {
         private readonly IReminderRepository _repository;
         private readonly IRefreshTokenRepository _refreshTokenRepository;
+        private readonly IBackgroundJobClient _backgroundJobClient;
 
-        public remindersController(IReminderRepository repository, IRefreshTokenRepository refreshTokenRepository)
+        public remindersController(IReminderRepository repository, IRefreshTokenRepository refreshTokenRepository,
+            IBackgroundJobClient backgroundJobClient)
         {
             _repository = repository;
             _refreshTokenRepository = refreshTokenRepository;
+            _backgroundJobClient = backgroundJobClient;
         }
 
         [HttpGet]
@@ -102,6 +107,14 @@ namespace IngetinGwAPI.Controllers
                         "REMINDER_FAIL", "Create reminder failed"
                     ));
                 }
+
+                var jobId = _backgroundJobClient.Schedule<ReminderJobService>(
+                    x => x.SendReminderEmail(reminders.Id, cancellationToken),
+                    //reminders.Remind_at
+                    DateTime.Now.AddSeconds(20)
+                );
+
+                //reminders.HangfireJobId = jobId;
 
                 return Ok(Helpers.Success(reminders));
             }
