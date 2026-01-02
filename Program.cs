@@ -75,6 +75,8 @@ builder.Services.AddScoped<ReminderJobService>();
 
 
 // 🔹 JWT Authentication
+#region JWT authentication
+/*
 var jwtSettings = builder.Configuration.GetSection("Jwt");
 var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]);
 
@@ -97,13 +99,15 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 builder.Services.AddAuthorization();
+*/
+#endregion
 
 var app = builder.Build();
 
 //app.UseHangfireDashboard("/hangfire");
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
 {
     app.UseSwagger();
     app.UseSwaggerUI();

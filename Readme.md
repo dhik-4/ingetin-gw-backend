@@ -25,14 +25,7 @@ C. Buatlah file 'appsettings.json', save file di direktori yang bersamaan dengan
     "Host": "localhost",
     "Port": 1025,
     "From": "reminder@localhost"
-  },
-  
-  "Jwt": {
-    "Key": "THIS_IS_A_SUPER_SECRET_KEY_AT_LEAST_32_CHARS",
-    "Issuer": "MyApi",
-    "Audience": "MyApiUsers",
-    "AccessTokenSeconds": 20
-  },
+  }
 }
 keterangan pada JSON yang tertulis:
 1. CustomVariable -> AccessTokenSeconds: untuk menentukan maksimal expire access_token dalam detik
