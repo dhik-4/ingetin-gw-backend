@@ -31,10 +31,12 @@ namespace IngetinGwAPI.Repositories
         {
             User? _result = null;
             var getUser = await _context.Users.Where(u => u.Email == Email).FirstOrDefaultAsync(cancellationToken);
-            string passwMd5 = CreateMD5($"{getUser.Id}{Email}{Password}");
-            if (getUser is not null && getUser.Password == passwMd5)
+            
+            if (getUser is not null)
             {
-                _result = getUser;
+                string passwMd5 = CreateMD5($"{getUser.Id}{Email}{Password}");
+                if (getUser.Password == passwMd5)
+                    _result = getUser;
             }
 
             return _result;
