@@ -1,5 +1,6 @@
 0. Selamat, Anda telah berhasil pull project IngetinGwAPI
 1. Buatlah file 'appsettings.json', save file di direktori yang bersamaan dengan project ini, lalu masukkan json ke file tersebut seperti di bawah ini
+
 {
   "Logging": {
     "LogLevel": {
@@ -21,6 +22,7 @@
     "From": "reminder@localhost"
   }
 }
+
 keterangan pada JSON yang tertulis:
 a. CustomVariable -> AccessTokenSeconds: untuk menentukan maksimal expire access_token dalam detik
 b. ConnectionStrings -> DefaultConnection: untuk menentukan koneksi ke database tujuan
@@ -31,12 +33,12 @@ c. Mailpit: untuk setting dalam kirim email
 4. khusus pada tabel [Users] sudah terisi 2 user untuk nantinya dipakai percobaan.
 
 5. buka Docker Desktop. jika belum diinstall, maka install terlebih dahulu Docker Desktop.
-5. kembali menuju Git Bash, build project dengan eksekusi kode ini pada git bash: 'docker build -t ingetingwapi .'
-6. run project dengan eksekusi kode ini pada git bash: 'docker run -p 5000:8080 ingetingwapi'
-7. silahkan buka http://localhost:5000/swagger/index.html pada browser. jika terbuka, maka sudah benar
+6. kembali menuju Git Bash, build project dengan eksekusi kode ini pada git bash: 'docker build -t ingetingwapi .'
+7. run project dengan eksekusi kode ini pada git bash: 'docker run -p 5000:8080 ingetingwapi'
+8. silahkan buka http://localhost:5000/swagger/index.html pada browser. jika terbuka, maka sudah benar
 
-8. ke Git Bash lagi, eksekusi kode ini untuk mengaktifkan Mailpit: 'docker run -d --name mailpit -p 1025:1025 -p 8025:8025 axllent/mailpit'
-9. buka http://localhost:8025 pada browser. jika terbuka, maka sudah benar
+9. ke Git Bash lagi, eksekusi kode ini untuk mengaktifkan Mailpit: 'docker run -d --name mailpit -p 1025:1025 -p 8025:8025 axllent/mailpit'
+10. buka http://localhost:8025 pada browser. jika terbuka, maka sudah benar
 
-10. sekarang API sudah siap dilakukan test.
-11. lakukan test API dengan menggunakan Postman atau sejenisnya
+11. sekarang API sudah siap dilakukan test.
+12. lakukan test API dengan menggunakan Postman atau sejenisnya
