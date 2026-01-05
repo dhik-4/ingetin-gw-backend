@@ -13,7 +13,7 @@
     "AccessTokenSeconds": 20
   },
   "ConnectionStrings": {
-    "DefaultConnection": "server=.\\SQLEXPRESS;user=[user anda];password=[password anda];Database=[nama database];TrustServerCertificate=True;"
+    "DefaultConnection": "server=host.docker.internal,1433;user=[user anda];password=[password anda];Database=[nama database];TrustServerCertificate=True;"
   },
   "Mailpit": {
     "Mode": "Development",
@@ -33,7 +33,7 @@ c. Mailpit: untuk setting dalam kirim email
 4. khusus pada tabel [Users] sudah terisi 2 user untuk nantinya dipakai percobaan.
 
 5. buka Docker Desktop. jika belum diinstall, maka install terlebih dahulu Docker Desktop.
-6. kembali menuju Git Bash, build project dengan eksekusi kode ini pada git bash: 'docker build -t ingetingwapi .'
+6. kembali menuju Git Bash, build project dengan eksekusi kode ini pada git bash: 'docker build -t ingetingwapi .' (jangan lupakan tanda titik di ujung)
 7. run project dengan eksekusi kode ini pada git bash: 'docker run -p 5000:8080 ingetingwapi'
 8. silahkan buka http://localhost:5000/swagger/index.html pada browser. jika terbuka, maka sudah benar
 
