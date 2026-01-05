@@ -27,7 +27,7 @@ namespace IngetinGwAPI.Services
             await smtp.DisconnectAsync(true);
         }
 
-        public async Task SendMailpitAsync(string to, string subject, string body)
+        public async Task<bool> SendMailpitAsync(string to, string subject, string body)
         {
             try
             {
@@ -50,13 +50,18 @@ namespace IngetinGwAPI.Services
                 using var smtp = new SmtpClient();
 
                 // Mailpit SMTP (no auth, no SSL)
-                await smtp.ConnectAsync(_host, _Port, false);
+                await smtp.ConnectAsync(_host, _Port, MailKit.Security.SecureSocketOptions.None);
                 await smtp.SendAsync(message);
                 await smtp.DisconnectAsync(true);
+
+                return true;
             }
             catch (Exception ex)
             {
+                //No connection could be made because the target machine actively refused it
             }
+
+            return false;
         }
     }
 }

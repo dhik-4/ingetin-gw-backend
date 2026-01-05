@@ -28,14 +28,15 @@ namespace IngetinGwAPI.Services
             string subject = reminder.Title;
             string body = reminder.Description;
 
-            await _emailService.SendMailpitAsync(
+            if (await _emailService.SendMailpitAsync(
                 mailTo,
                 subject,
                 body
-            );
-
-            reminder.IsEmailSent = 1;
-            await _repository.UpdateEmailSentReminder(reminder, cancellationToken);
+            ))
+            {
+                reminder.IsEmailSent = 1;
+                await _repository.UpdateEmailSentReminder(reminder, cancellationToken);
+            }
         }
     }
 }
