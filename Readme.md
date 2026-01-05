@@ -1,11 +1,5 @@
-A. Software yang digunakan
-1. Visual Studios (VS) 2019 (atau versi berapapun) untuk view project & kodenya
-2. SQL Server management studio (SSMS) untuk manajemen database
-3. Postman atau sejenisnya untuk mengetest API
-
-Langkah-langkah:
-B. tarik seluruh project
-C. Buatlah file 'appsettings.json', save file di direktori yang bersamaan dengan project ini, lalu masukkan json ke file tersebut seperti di bawah ini
+0. Selamat, Anda telah berhasil pull project IngetinGwAPI
+1. Buatlah file 'appsettings.json', save file di direktori yang bersamaan dengan project ini, lalu masukkan json ke file tersebut seperti di bawah ini
 {
   "Logging": {
     "LogLevel": {
@@ -28,23 +22,21 @@ C. Buatlah file 'appsettings.json', save file di direktori yang bersamaan dengan
   }
 }
 keterangan pada JSON yang tertulis:
-1. CustomVariable -> AccessTokenSeconds: untuk menentukan maksimal expire access_token dalam detik
-2. ConnectionStrings -> DefaultConnection: untuk menentukan koneksi ke database tujuan
-3. Mailpit: untuk setting dalam kirim email
+a. CustomVariable -> AccessTokenSeconds: untuk menentukan maksimal expire access_token dalam detik
+b. ConnectionStrings -> DefaultConnection: untuk menentukan koneksi ke database tujuan
+c. Mailpit: untuk setting dalam kirim email
 
-D. Buka VS lalu open & pilih 'IngetinGwAPI.sln', atau langsung klik pada 'IngetinGwAPI.sln'
-E. Buka SSMS
-F. buatlah tabel pada SQL server management studio, dengen cara menulis kode 
-cara membuat database & tabel dari VS ke Sql server management studio (SSMS):
-1. atur terlebih dahulu tujuan database, pada connection string pada file 'appsettings.json' dengan menentukan server, nama database, user id, password
-2. buka 'Package Manager Console' pada VS melalui: Tools -> NuGet Package Manager -> Package Manager Console
-3. ketik 'Add-Migration [kalimat bebas]' lalu tekan enter
-4. ketik 'Update-Database' lalu tekan enter
-5. periksa SSMS, refresh, dan akan terlihat database dan tabel2 yang telah terbentuk
+2. Buatlah database terlebih dahulu dengan buka file ScriptDB.sql, kemudian pada row paling pertama, ubah [Nama_Database_Anda] menjadi nama database sesuai nama yang anda buat
+3. eksekusi seluruh script, kemudian akan terbentuk 4 tabel untuk menunjang project IngetinGwAPI
+4. khusus pada tabel [Users] sudah terisi 2 user untuk nantinya dipakai percobaan.
 
-Mulai pengetesan API:
-G. kembali ke project pada VS, untuk memulai debug, klik tombol 'Play' yang berwarna hijau, atau melalui Debug -> Start Debugging, atau tekan F5
-H. akan otomatis muncul browser dan memperlihatkan daftar API yang bisa digunakan pada halaman swagger
-I. buka Postman atau sejenisnya, lalu seluruh API dapat ditest menggunakan software tersebut.
-(Perhatian: API tidak bisa dieksekusi & berfungsi jika debug dari VS tidak dijalankan)
-J. jika selesai pengetesan, maka hentikan debug dengan menutup langsung browser halaman swagger, atau melalui Debug -> Stop Debugging, atau tekan Shift + F5
+5. buka Docker Desktop. jika belum diinstall, maka install terlebih dahulu Docker Desktop.
+5. kembali menuju Git Bash, build project dengan eksekusi kode ini pada git bash: 'docker build -t ingetingwapi .'
+6. run project dengan eksekusi kode ini pada git bash: 'docker run -p 5000:8080 ingetingwapi'
+7. silahkan buka http://localhost:5000/swagger/index.html pada browser. jika terbuka, maka sudah benar
+
+8. ke Git Bash lagi, eksekusi kode ini untuk mengaktifkan Mailpit: 'docker run -d --name mailpit -p 1025:1025 -p 8025:8025 axllent/mailpit'
+9. buka http://localhost:8025 pada browser. jika terbuka, maka sudah benar
+
+10. sekarang API sudah siap dilakukan test.
+11. lakukan test API dengan menggunakan Postman atau sejenisnya
